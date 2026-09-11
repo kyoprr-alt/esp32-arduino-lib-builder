@@ -31,7 +31,14 @@ if [ -z "$CHIP_VARIANT" ]; then
 fi
 
 # Owner of the target ESP32 Arduino repository
-AR_USER="${GITHUB_REPOSITORY_OWNER:-espressif}"
+#
+# SlicklinePro fork: pinned to espressif instead of $GITHUB_REPOSITORY_OWNER.
+# On Actions that variable is the owner of THIS repository, so in any fork the
+# script goes looking for <you>/arduino-esp32 and <you>/esp-idf, which do not
+# exist, and the build dies in about twenty seconds with nothing but "exit 1".
+# Espressif never sees it because on their own repo the variable already says
+# espressif. We only fork the lib-builder, so the sources must come from upstream.
+AR_USER="espressif"
 
 # The full name of the repository
 AR_REPO="$AR_USER/arduino-esp32"
