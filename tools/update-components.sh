@@ -27,5 +27,10 @@ if [ $? -ne 0 ]; then exit 1; fi
 # the unit is actually running, so the output matches what is installed.
 if [ -n "$TINYUSB_COMMIT" ]; then
     echo "Pinning TinyUSB to $TINYUSB_COMMIT"
-    git -C "$TINYUSB_REPO_DIR" checkout "$TINYUSB_COMMIT" || exit 1
+    git -C "$TINYUSB_REPO_DIR" fetch origin "$TINYUSB_COMMIT" || true
+    git -C "$TINYUSB_REPO_DIR" checkout --detach "$TINYUSB_COMMIT" || {
+        echo "::error::could not check out TinyUSB $TINYUSB_COMMIT"
+        exit 1
+    }
+    git -C "$TINYUSB_REPO_DIR" --no-pager log --oneline -1
 fi

@@ -56,5 +56,15 @@ if [ $? -ne 0 ]; then exit 1; fi
 # the pull, so it lands on the exact commit and stays there.
 if [ -n "$AR_COMMIT" ]; then
 	echo "Pinning arduino-esp32 to $AR_COMMIT"
-	git -C "$AR_COMPS/arduino" checkout "$AR_COMMIT" || exit 1
+	# Fetch the commit explicitly before checking it out. The clone above does not
+	# reliably bring every object down, and "pathspec did not match any file(s)
+	# known to git" on a commit that plainly exists upstream is what that looks
+	# like. --detach because this is a commit, not a branch.
+	git -C "$AR_COMPS/arduino" fetch --tags --prune origin || true
+	git -C "$AR_COMPS/arduino" fetch origin "$AR_COMMIT" || true
+	git -C "$AR_COMPS/arduino" checkout --detach "$AR_COMMIT" || {
+		echo "::error::could not check out arduino-esp32 $AR_COMMIT"
+		exit 1
+	}
+	git -C "$AR_COMPS/arduino" --no-pager log --oneline -1
 fi
