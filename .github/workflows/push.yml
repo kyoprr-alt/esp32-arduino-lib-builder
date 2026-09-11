@@ -49,9 +49,12 @@ jobs:
           # Annotations are capped in size, and a plain tail of this build is all
           # CMake configure chatter — the real message scrolls past. Pull the lines
           # that actually say something went wrong, wherever they are in the log.
-          MSG=$(grep -aiE '(^|[^a-z])(error|fatal|FAILED|undefined reference|No such file)' /tmp/build.log \
+          # -A 8: a CMake Error's first line names the file and macro, the reason
+          # is in the indented lines under it. Grabbing only matching lines threw
+          # the reason away.
+          MSG=$(grep -aiE -A 8 '(^|[^a-z])(CMake Error|error:|fatal|FAILED|undefined reference|No such file)' /tmp/build.log \
                 | grep -vaiE 'Deprecation Warning|CMP0|cmake_minimum_required|Compatibility with CMake' \
-                | tail -20 | cut -c1-300 \
+                | tail -40 | cut -c1-200 \
                 | sed -e 's/%/%25/g' -e 's/\r//g' | awk '{printf "%s%%0A", $0}')
           [ -z "$MSG" ] && MSG=$(tail -20 /tmp/build.log | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
           echo "::error title=build.sh exit $rc::${MSG}"
