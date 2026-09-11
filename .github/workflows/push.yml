@@ -48,8 +48,12 @@ jobs:
     # commit fails today on a moved TinyUSB file.
     - name: Build Libs for ${{ matrix.target }}
       env:
-        AR_COMMIT: 86c2c0046        # arduino-esp32, idf-release/v5.5
-        TINYUSB_COMMIT: 2883403ed   # hathach/tinyusb
+        # versions.txt names arduino commit 86c2c0046, but no branch points at it
+        # any more - git cannot fetch it and GitHub will not serve the bare SHA,
+        # even though the API still shows it. The 3.3.7 TAG is a permanent ref for
+        # the same release, and 3.3.7 is exactly the core installed on this PC.
+        AR_COMMIT: "3.3.7"          # arduino-esp32 release tag
+        TINYUSB_COMMIT: 2883403ed   # hathach/tinyusb, from versions.txt - verified reachable
       run: |
         set +e
         bash ./build.sh -e -t ${{ matrix.target }} -i 87912cd291 2>&1 | tee /tmp/build.log
