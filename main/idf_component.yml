@@ -17,7 +17,12 @@ dependencies:
     rules:
       - if: "target in [esp32s3]"
   espressif/esp_matter:
-    version: "1.4.1"
+    # Was "1.4.1". That version has since been YANKED from the component registry,
+    # and it pins esp_insights 1.2.2 while arduino-esp32 asks for >=1.3.3, so
+    # version solving now fails outright — this commit cannot build today as it
+    # stands, for anyone. Upstream master hit the same wall and moved to 1.5.
+    # Nothing in this project uses Matter; the bump is only to let solving finish.
+    version: "1.5"
     require: public
     rules:
       - if: "target not in [esp32c2, esp32p4, esp32c61]"
