@@ -126,20 +126,15 @@ CONFIG_MBEDTLS_DYNAMIC_FREE_PEER_CERT=y
 CONFIG_MBEDTLS_DYNAMIC_FREE_CONFIG_DATA=y
 CONFIG_I2S_ISR_IRAM_SAFE=y
 #
-# Matter Settings
+# Matter Settings — commented out along with the esp_matter component itself.
+# See main/idf_component.yml for why Matter is not built in this fork.
 #
-# Matter disables BLE after commissioining
-CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING=y
-# ESP Insights
-CONFIG_ENABLE_ESP_INSIGHTS_TRACE=n
-# Use compact attribute storage mode
-CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE=y
-# Do not use minimal mDNS within Matter Core
-CONFIG_USE_MINIMAL_MDNS=n
-# Changes Matter Memory Allocation Mode to use the default malloc() that can use PSRAM is enabled
-CONFIG_ESP_MATTER_MEM_ALLOC_MODE_DEFAULT=y
-# Disable default mode that only allocates memory from DRAM
-CONFIG_ESP_MATTER_MEM_ALLOC_MODE_INTERNAL=n
+# CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING=y
+# CONFIG_ENABLE_ESP_INSIGHTS_TRACE=n
+# CONFIG_ESP_MATTER_NVS_USE_COMPACT_ATTR_STORAGE=y
+# CONFIG_USE_MINIMAL_MDNS=n
+# CONFIG_ESP_MATTER_MEM_ALLOC_MODE_DEFAULT=y
+# CONFIG_ESP_MATTER_MEM_ALLOC_MODE_INTERNAL=n
 
 #TinyUSB Config
 CONFIG_TINYUSB_CDC_MAX_PORTS=2

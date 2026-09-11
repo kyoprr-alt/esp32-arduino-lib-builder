@@ -16,13 +16,26 @@ dependencies:
     version: ">=1.4.2"
     rules:
       - if: "target in [esp32s3]"
-  espressif/esp_matter:
-    # Was "1.4.1". That version has since been YANKED from the component registry,
-    # and it pins esp_insights 1.2.2 while arduino-esp32 asks for >=1.3.3, so
-    # version solving now fails outright — this commit cannot build today as it
-    # stands, for anyone. Upstream master hit the same wall and moved to 1.5.
-    # Nothing in this project uses Matter; the bump is only to let solving finish.
-    version: "1.5"
-    require: public
-    rules:
-      - if: "target not in [esp32c2, esp32p4, esp32c61]"
+  # SlicklinePro fork: Matter is REMOVED, not pinned.
+  #
+  # It was the source of every dependency failure in this build, one after another:
+  #   1.4.1 - yanked from the registry, and pinned esp_insights 1.2.2 against
+  #           arduino-esp32's >=1.3.3
+  #   1.5   - wants esp_rcp_update ~1.3.0 while esp_rainmaker 1.5.2, which
+  #           arduino-esp32 3.3.7 requires, wants ~1.2.0. No version satisfies both.
+  #
+  # This project is a wireline monitor. It has no Matter code, no Thread radio and
+  # no commissioning. Carrying the component only to satisfy a solver that cannot
+  # be satisfied is not worth another round, and dropping it removes the whole
+  # class of failure rather than moving to the next version of it.
+  #
+  # Consequence, stated plainly: the libraries built here will not support Matter,
+  # so the core's Matter examples would no longer link. Nothing on this device uses
+  # them. To bring it back, restore this block with a version whose esp_rcp_update
+  # range overlaps whatever esp_rainmaker the pinned arduino-esp32 asks for.
+  #
+  # espressif/esp_matter:
+  #   version: "1.5"
+  #   require: public
+  #   rules:
+  #     - if: "target not in [esp32c2, esp32p4, esp32c61]"

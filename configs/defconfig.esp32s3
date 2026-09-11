@@ -38,10 +38,10 @@ CONFIG_LCD_RGB_RESTART_IN_VSYNC=y
 # which functions collide in the cache, and changed the flicker. The S3 supports 32 KB.
 CONFIG_ESP32S3_INSTRUCTION_CACHE_32KB=y
 
-# Matter settings:
-CONFIG_ENABLE_CHIPOBLE=y
-# increase the maximum number of endpoints per device
-CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT=32
+# Matter settings — commented out with the component itself (see
+# main/idf_component.yml). These symbols do not exist once esp_matter is gone.
+# CONFIG_ENABLE_CHIPOBLE=y
+# CONFIG_ESP_MATTER_MAX_DYNAMIC_ENDPOINT_COUNT=32
 
 CONFIG_USB_HOST_HUBS_SUPPORTED=y
 CONFIG_USB_HOST_HUB_MULTI_LEVEL=y
