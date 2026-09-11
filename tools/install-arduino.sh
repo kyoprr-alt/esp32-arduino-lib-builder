@@ -46,3 +46,15 @@ if [ "$AR_BRANCH" ]; then
 	git -C "$AR_COMPS/arduino" pull --ff-only
 fi
 if [ $? -ne 0 ]; then exit 1; fi
+
+# SlicklinePro fork: pin arduino-esp32 to an exact commit.
+#
+# The branch checkout above follows whatever the release branch points at today.
+# The whole point of this build is libraries that drop in beside the arduino-esp32
+# 3.3.7 already installed, so the source has to be the commit that version was cut
+# from - taken from versions.txt in the installed esp32s3-libs package. Done after
+# the pull, so it lands on the exact commit and stays there.
+if [ -n "$AR_COMMIT" ]; then
+	echo "Pinning arduino-esp32 to $AR_COMMIT"
+	git -C "$AR_COMPS/arduino" checkout "$AR_COMMIT" || exit 1
+fi

@@ -40,10 +40,19 @@ jobs:
     # logs, and the only thing an anonymous caller can see is "exit code 1".
     # Annotations ARE readable without signing in, so on failure the tail of the
     # build output is re-emitted as one, which is enough to work out what broke.
+    # SlicklinePro fork: every source is pinned to the commit recorded in
+    # versions.txt of the esp32s3-libs 3.3.7 package the unit is running, so what
+    # comes out of here differs from what is installed ONLY by the two sdkconfig
+    # lines this fork changes. Upstream pins none of these and follows whatever
+    # each repo's head is on the day - which is how a build of a two-week-old
+    # commit fails today on a moved TinyUSB file.
     - name: Build Libs for ${{ matrix.target }}
+      env:
+        AR_COMMIT: 86c2c0046        # arduino-esp32, idf-release/v5.5
+        TINYUSB_COMMIT: 2883403ed   # hathach/tinyusb
       run: |
         set +e
-        bash ./build.sh -e -t ${{ matrix.target }} 2>&1 | tee /tmp/build.log
+        bash ./build.sh -e -t ${{ matrix.target }} -i 87912cd291 2>&1 | tee /tmp/build.log
         rc=${PIPESTATUS[0]}
         if [ $rc -ne 0 ]; then
           # Annotations are capped in size, and a plain tail of this build is all

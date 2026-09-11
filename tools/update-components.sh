@@ -15,3 +15,17 @@ else
     git -C "$TINYUSB_REPO_DIR" pull --ff-only
 fi
 if [ $? -ne 0 ]; then exit 1; fi
+
+# SlicklinePro fork: pin TinyUSB.
+#
+# Upstream tracks master with no pin at all, so what you get depends on the day
+# you build. Today's master has moved src/device/usbd_control.c, and the build
+# dies with "No SOURCES given to target: __idf_arduino_tinyusb" - nothing to do
+# with this project's changes.
+#
+# This is the commit recorded in versions.txt of the esp32s3-libs 3.3.7 package
+# the unit is actually running, so the output matches what is installed.
+if [ -n "$TINYUSB_COMMIT" ]; then
+    echo "Pinning TinyUSB to $TINYUSB_COMMIT"
+    git -C "$TINYUSB_REPO_DIR" checkout "$TINYUSB_COMMIT" || exit 1
+fi
