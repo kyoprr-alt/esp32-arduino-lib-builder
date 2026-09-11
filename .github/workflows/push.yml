@@ -36,8 +36,20 @@ jobs:
     - name: Install dependencies
       run: bash ./tools/prepare-ci.sh
 
+    # SlicklinePro fork: GitHub requires a signed-in session to read workflow
+    # logs, and the only thing an anonymous caller can see is "exit code 1".
+    # Annotations ARE readable without signing in, so on failure the tail of the
+    # build output is re-emitted as one, which is enough to work out what broke.
     - name: Build Libs for ${{ matrix.target }}
-      run: bash ./build.sh -e -t ${{ matrix.target }}
+      run: |
+        set +e
+        bash ./build.sh -e -t ${{ matrix.target }} 2>&1 | tee /tmp/build.log
+        rc=${PIPESTATUS[0]}
+        if [ $rc -ne 0 ]; then
+          MSG=$(tail -60 /tmp/build.log | sed -e 's/%/%25/g' -e 's/\r//g' | awk '{printf "%s%%0A", $0}')
+          echo "::error title=build.sh exit $rc::${MSG}"
+        fi
+        exit $rc
 
     - name: Upload build
       if: failure()
